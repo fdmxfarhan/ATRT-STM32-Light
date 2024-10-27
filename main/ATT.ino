@@ -7,7 +7,7 @@ void att_init(){
   pinMode(PC13,OUTPUT);  
   pinMode(PC15,OUTPUT);  
   pinMode(PC14,OUTPUT);  
-  pinMode(PB0,OUTPUT);  
+  pinMode(PB0,OUTPUT);    
   pinMode(PB1,OUTPUT);  
 
   
@@ -27,7 +27,7 @@ void att_init(){
   pinMode(PA15,INPUT);  
   
   motor(0,0,0,0);
-  display.begin(0x2, 0x3C);
+  display.begin();
   display.clearDisplay();
   display.setTextColor(WHITE);
   display.setTextSize(4);
@@ -48,12 +48,12 @@ void att_init(){
   display.clearDisplay();
   display.display();
   delay(500); 
-  Serial.begin(115200);
-  Serial.write(0XA5);
-  Serial.write(0X54);
+  Serial1.begin(115200);
+  Serial1.write(0XA5);
+  Serial1.write(0X54);
   delay(500);
-  Serial.write(0XA5);
-  Serial.write(0X51);
+  Serial1.write(0XA5);
+  Serial1.write(0X51);
 }
 
 void read_all(){
@@ -61,8 +61,8 @@ void read_all(){
   if(digitalRead(PB4) || digitalRead(PB5) || digitalRead(PA15))  {
     digitalWrite(PC13,0);
     if(digitalRead(PB5)){
-      Serial.write(0XA5);
-      Serial.write(0X55);
+      Serial1.write(0XA5);
+      Serial1.write(0X55);
       while(digitalRead(PB5));
     }
   }
@@ -77,10 +77,10 @@ void read_all(){
   sensor[6] = analogRead(PA7);
   for(int i = 0; i<7; i++) sensor[i] /= 10;
   ///////////////////-----GY-25
-  Serial.write(0XA5);
-  Serial.write(0X51);
+  Serial1.write(0XA5);
+  Serial1.write(0X51);
   while (true) {   
-    buff[counter] = Serial.read();
+    buff[counter] = Serial1.read();
     if(counter == 0 && buff[0] != 0xAA) break;
     counter++;       
     if(counter==8)
@@ -151,12 +151,6 @@ void print_all(){
 void motor(int L1, int L2, int R2, int R1){
 //  if(GY>20 && GY<-20) GY*=2;
 //  else                GY*=1;
-  if(GY>6 && GY<=30)          GY = 40;
-  else if(GY>30 && GY<=80)    GY = 80;
-  else if(GY>80)              GY = 150;
-  else if(GY<-6 && GY>=-30)   GY = -40;
-  else if(GY<-30 && GY>=-80)  GY = -80;
-  else if(GY<-80)             GY = -150;
 
   L1 += GY;
   L2 += GY;
